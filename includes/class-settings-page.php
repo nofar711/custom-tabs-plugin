@@ -79,6 +79,7 @@ class Settings_Page {
             '<input type="text" name="custom_tabs_settings[' . $index . '][title]" value="' . esc_attr($tab['title']) . '"></label></p>' .
             '<p><label>Content<br>' .
             '<textarea name="custom_tabs_settings[' . $index . '][content]" rows="2">' . esc_textarea($tab['content']) . '</textarea></label></p>' .
+            '<button type="button" class="button delete-tab">Delete</button>' .
             '</div>';
     }
 }

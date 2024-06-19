@@ -21,4 +21,21 @@ jQuery(document).ready(function ($) {
 		);
 		tabCount++;
 	});
+
+	$(document).on('click', '.delete-tab', function () {
+		$(this).closest('.tab-panel').remove();
+		$('#tabs-container .tab-panel').each(function (i) {
+			$(this)
+				.find('h3')
+				.text('Tab ' + (i + 1));
+			$(this)
+				.find('input[type="text"]')
+				.attr('name', 'custom_tabs_settings[' + i + '][title]');
+			$(this)
+				.find('textarea')
+				.attr('name', 'custom_tabs_settings[' + i + '][content]');
+		});
+
+		tabCount--;
+	});
 });
