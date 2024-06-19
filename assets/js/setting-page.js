@@ -9,14 +9,15 @@ jQuery(document).ready(function ($) {
 				'<h3>Tab ' +
 				(index + 1) +
 				'</h3>' +
-				'<p><label>Title<br>' +
+				'<p><label>Tab Title<br>' +
 				'<input type="text" name="custom_tabs_settings[' +
 				index +
 				'][title]" value=""></label></p>' +
-				'<p><label>Content<br>' +
+				'<p><label>Tab Content<br>' +
 				'<textarea name="custom_tabs_settings[' +
 				index +
-				'][content]" rows="2"></textarea></label></p>' +
+				'][content]" rows="3"></textarea></label></p>' +
+				'<button type="button" class="button delete-tab">Delete</button>' +
 				'</div>'
 		);
 		tabCount++;
@@ -24,18 +25,6 @@ jQuery(document).ready(function ($) {
 
 	$(document).on('click', '.delete-tab', function () {
 		$(this).closest('.tab-panel').remove();
-		$('#tabs-container .tab-panel').each(function (i) {
-			$(this)
-				.find('h3')
-				.text('Tab ' + (i + 1));
-			$(this)
-				.find('input[type="text"]')
-				.attr('name', 'custom_tabs_settings[' + i + '][title]');
-			$(this)
-				.find('textarea')
-				.attr('name', 'custom_tabs_settings[' + i + '][content]');
-		});
-
 		tabCount--;
 	});
 });
