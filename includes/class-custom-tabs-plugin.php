@@ -19,6 +19,7 @@ class Custom_Tabs_Plugin {
 
     public static function enqueue_styles() {
         wp_enqueue_style( 'custom-tabs-plugin-style', plugins_url( '../assets/scss/style.scss', __FILE__ ) );
+        wp_enqueue_style('custom-tabs-plugin-font', 'https://use.typekit.net/wuz0gtr.css');
     }
 }
 
