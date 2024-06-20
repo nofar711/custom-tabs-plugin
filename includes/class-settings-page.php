@@ -8,7 +8,7 @@ class Settings_Page {
             'manage_options',
             'custom-tabs-settings',
             array('Settings_Page', 'create_admin_page'),
-            'dashicons-admin-generic'
+            plugins_url('../assets/img/custom-icon.svg', __FILE__), 
         );
     }
 
