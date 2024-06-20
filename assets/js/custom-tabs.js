@@ -1,10 +1,12 @@
 jQuery(document).ready(function ($) {
-	$('.tab-contents .tab-content').not(':first').hide();
+	$('.tabs-body .tab-content').not(':first').hide();
+	$('.tab-title.default').addClass('active');
 
-	$('.tab-titles a').on('click', function () {
-		$('.tab-titles li').removeClass('active');
-		$(this).closest('li').addClass('active');
-		$('.tab-contents .tab-content').hide();
-		$($(this).attr('href')).fadeIn();
+	$('.tabs-header .tab-title').on('click', function () {
+		$('.tabs-header .tab-title').removeClass('active');
+		$(this).addClass('active');
+		$('.tabs-body .tab-content').hide();
+		var tabId = $(this).attr('id').replace('-button', '');
+		$('#' + tabId).fadeIn();
 	});
 });

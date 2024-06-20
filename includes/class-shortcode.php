@@ -15,18 +15,17 @@ class Custom_Tabs_Shortcode {
 
         <!-- component -->
         <div class="custom-tabs">
-            <ul class="tab-titles">
-                
-                    <li><a href="#default-tab"><?php echo esc_html($default_tab_data['title']); ?></a></li>
+            <ul class="tabs-header">
+                    <li class="tab-title default" id="tab-default-button"><?php echo esc_html($default_tab_data['title']); ?></li>
                     <?php if (!empty($options)) : ?>
                     <?php foreach ($options as $index => $tab) : ?>
-                        <li><a href="#tab-<?php echo $index; ?>"><?php echo esc_html($tab['title']); ?></a></li>
+                        <li class="tab-title" id="tab-<?php echo $index; ?>-button"><?php echo esc_html($tab['title']); ?></li>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </ul>
 
-            <div class="tab-contents">
-                    <div id="default-tab" class="tab-content">
+            <div class="tabs-body">
+                    <div id="tab-default" class="tab-content">
                         <?php echo wpautop(wp_kses_post($default_tab_data['content'])); ?>
                     </div>
                     <?php if (!empty($options)) : ?>
