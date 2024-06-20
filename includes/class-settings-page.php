@@ -25,15 +25,11 @@ class Settings_Page {
                 if (!is_array($tabs)) {
                     $tabs = array();
                 }
-                $tab_count = count($tabs);
                 ?>
                 <div id="tabs-container">
                     <?php
-                    self::render_default_tab();
-                    if (!empty($tabs)) {
-                        foreach ($tabs as $index => $tab) {
-                            self::render_tab_fields($index, $tab);
-                        }
+                    foreach ($tabs as $index => $tab) {
+                        self::render_tab_fields($tab, $index);
                     }
                     ?>
                 </div>
@@ -42,11 +38,38 @@ class Settings_Page {
             </form>
         </div>
 
+        <div id="tab-template" style="display: none;">
+            <?php self::render_tab_fields(array('post_id' => '', 'post_type' => ''), 'INDEX'); ?>
+        </div>
+
         <script>
-            var tabsData = {
-                tabs: <?php echo json_encode($tabs); ?>,
-                tabCount: <?php echo $tab_count; ?>
-            };
+        jQuery(document).ready(function($) {
+            $('#add-tab').on('click', function() {
+                var template = $('#tab-template').html().replace(/INDEX/g, $('.tab-panel').length);
+                $('#tabs-container').append(template);
+            });
+
+            $(document).on('click', '.delete-tab', function() {
+                $(this).closest('.tab-panel').remove();
+            });
+
+            $(document).on('change', '.post-type-select', function() {
+                var postType = $(this).val();
+                var $postSelect = $(this).closest('.tab-panel').find('.post-select');
+
+                $.ajax({
+                    url: ajaxurl,
+                    method: 'POST',
+                    data: {
+                        action: 'load_posts',
+                        post_type: postType
+                    },
+                    success: function(response) {
+                        $postSelect.html(response);
+                    }
+                });
+            });
+        });
         </script>
         <?php
     }
@@ -60,84 +83,58 @@ class Settings_Page {
             null,
             'custom-tabs-settings'
         );
-
-        add_action('admin_enqueue_scripts', array('Settings_Page', 'enqueue_setting_page_script'));
-    }
-
-    public static function enqueue_setting_page_script() {
-        wp_enqueue_script('setting-page-script', plugin_dir_url(__FILE__) . '../assets/js/setting-page.js', array('jquery'), null, true);
+        add_action('wp_ajax_load_posts', array('Settings_Page', 'load_posts_ajax'));
     }
 
     public static function sanitize_tabs_settings($input) {
         foreach ($input as $key => $value) {
-            $input[$key]['title'] = sanitize_text_field($value['title']);
-            $input[$key]['content'] = wp_kses_post($value['content']);
+            $input[$key]['post_id'] = absint($value['post_id']);
+            $input[$key]['post_type'] = sanitize_text_field($value['post_type']);
         }
         return $input;
     }
 
-    protected static $default_tab_data = array(
-        'title' => 'default title test',
-        'content' => 'default content test'
-    );
+    private static function render_tab_fields($tab, $index) {
+        $post_types = get_post_types(array('public' => true), 'objects');
+        $selected_post_type = isset($tab['post_type']) ? $tab['post_type'] : '';
 
-    public static function get_default_tab_data() {
-        return self::$default_tab_data;
-    }
+        $post_type_options = '';
+        foreach ($post_types as $post_type) {
+            $selected = $post_type->name == $selected_post_type ? 'selected' : '';
+            $post_type_options .= '<option value="' . $post_type->name . '" ' . $selected . '>' . esc_html($post_type->labels->singular_name) . '</option>';
+        }
 
-    private static function render_default_tab() {
-        $default_tab_data = self::get_default_tab_data();
-        $default_tab_title = $default_tab_data['title'];
-        $default_tab_content = $default_tab_data['content'];
+        $posts = get_posts(array('post_type' => $selected_post_type, 'numberposts' => -1));
+        $post_options = '';
+        foreach ($posts as $post) {
+            $selected = isset($tab['post_id']) && $post->ID == $tab['post_id'] ? 'selected' : '';
+            $post_options .= '<option value="' . $post->ID . '" ' . $selected . '>' . esc_html($post->post_title) . '</option>';
+        }
 
-        echo '<div class="tab-panel default-tab">' .
-            '<h3>Default Tab</h3>' .
-            '<p><label>Tab Title<br>' .
-            '<input type="text" name="default_tab_title" value="' . esc_attr($default_tab_title) . '" readonly></label></p>' .
-            '<p><label>Tab Content<br>' .
-            '<textarea name="default_tab_content" rows="3" readonly>' . esc_textarea($default_tab_content) . '</textarea></label></p>' .
-            '</div>';
-    }
-
-    private static function render_tab_fields($index, $tab) {
-        echo '<div class="tab-panel">' .
-            '<h3>Tab ' . ($index + 1) . '</h3>' .
-            '<p><label>Tab Title<br>' .
-            '<input type="text" name="custom_tabs_settings[' . $index . '][title]" value="' . esc_attr($tab['title']) . '"></label></p>' .
-            '<p><label>Tab Content<br>' .
-            '<textarea name="custom_tabs_settings[' . $index . '][content]" rows="3">' . esc_textarea($tab['content']) . '</textarea></label></p>' .
-            '<button type="button" class="button delete-tab">Delete</button>' .
-            '</div>';
-    }
-
-    public static function render_tabs_shortcode($atts) {
-        ob_start();
         ?>
-        <div class="custom-tabs">
-            <div class="tab-panel default-tab">
-                <h3><?php echo esc_html(self::$default_tab_data['title']); ?></h3>
-                <div><?php echo wp_kses_post(self::$default_tab_data['content']); ?></div>
-            </div>
-            <?php
-            $tabs = get_option('custom_tabs_settings', array());
-            if (!is_array($tabs)) {
-                $tabs = array();
-            }
-            foreach ($tabs as $index => $tab) {
-                echo '<div class="tab-panel">' .
-                    '<h3>' . esc_html($tab['title']) . '</h3>' .
-                    '<div>' . wp_kses_post($tab['content']) . '</div>' .
-                    '</div>';
-            }
-            ?>
+        <div class="tab-panel">
+            <h3>Tab</h3>
+            <p><label>Select Post Type<br>
+                <select name="custom_tabs_settings[<?php echo $index; ?>][post_type]" class="post-type-select"><?php echo $post_type_options; ?></select></label></p>
+            <p><label>Select Post<br>
+                <select name="custom_tabs_settings[<?php echo $index; ?>][post_id]" class="post-select"><?php echo $post_options; ?></select></label></p>
+            <button type="button" class="button delete-tab">Delete</button>
         </div>
         <?php
-        return ob_get_clean();
+    }
+
+    public static function load_posts_ajax() {
+        $post_type = isset($_POST['post_type']) ? sanitize_text_field($_POST['post_type']) : 'post';
+        $posts = get_posts(array('post_type' => $post_type, 'numberposts' => -1));
+        $post_options = '';
+        foreach ($posts as $post) {
+            $post_options .= '<option value="' . $post->ID . '">' . esc_html($post->post_title) . '</option>';
+        }
+        echo $post_options;
+        wp_die();
     }
 }
 
 add_action('admin_init', array('Settings_Page', 'register_settings'));
 add_action('admin_menu', array('Settings_Page', 'add_menu_page'));
-add_shortcode('custom_tabs', array('Settings_Page', 'render_tabs_shortcode'));
-
 ?>
