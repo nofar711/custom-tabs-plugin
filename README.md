@@ -24,7 +24,6 @@ The Custom Tabs Plugin allows you to create custom tabs on your WordPress site, 
 To see an example of how the tabs look, add the following code to your post (built with basic Gutenberg):
 
 ```html
-<!-- wp:html -->
 <!-- wp:columns {"verticalAlignment":null,"className":"main-content"} -->
 <div class="wp-block-columns main-content"><!-- wp:column {"verticalAlignment":"center","width":"66.66%","className":"quote-with-background-img"} -->
 <div class="wp-block-column is-vertically-aligned-center quote-with-background-img" style="flex-basis:66.66%"><!-- wp:paragraph {"align":"left","style":{"typography":{"fontSize":"24px"}}} -->
@@ -92,8 +91,7 @@ To see an example of how the tabs look, add the following code to your post (bui
 <!-- /wp:gallery --></div>
 <!-- /wp:column --></div>
 <!-- /wp:columns -->
- <!-- /wp:html -->
-
+```
  
 > **Note:** All necessary images and styles for the post component are included in the plugin, making it compatible with the copy-paste method to view the example.
 
