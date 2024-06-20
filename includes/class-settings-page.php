@@ -26,15 +26,18 @@ class Settings_Page {
                     $tabs = array();
                 }
                 ?>
-                <div id="tabs-container">
+                <div class="tabs-container">
                     <?php
                     foreach ($tabs as $index => $tab) {
                         self::render_tab_fields($tab, $index);
                     }
                     ?>
                 </div>
-                <button type="button" class="button" id="add-tab">Add Tab</button>
-                <?php submit_button(); ?>
+                <div class="action-buttons">
+                    <button type="button" class="button" id="add-tab">Add New Tab</button>
+                    <?php submit_button(); ?>
+                </div>
+                
             </form>
         </div>
 
@@ -46,10 +49,10 @@ class Settings_Page {
         jQuery(document).ready(function($) {
             $('#add-tab').on('click', function() {
                 var template = $('#tab-template').html().replace(/INDEX/g, $('.tab-panel').length);
-                $('#tabs-container').append(template);
+                $('.tabs-container').append(template);
             });
 
-            $(document).on('click', '.delete-tab', function() {
+            $(document).on('click', '.delete-button', function() {
                 $(this).closest('.tab-panel').remove();
             });
 
@@ -118,7 +121,7 @@ class Settings_Page {
                 <select name="custom_tabs_settings[<?php echo $index; ?>][post_type]" class="post-type-select"><?php echo $post_type_options; ?></select></label></p>
             <p><label>Select Post<br>
                 <select name="custom_tabs_settings[<?php echo $index; ?>][post_id]" class="post-select"><?php echo $post_options; ?></select></label></p>
-            <button type="button" class="button delete-tab">Delete</button>
+            <button type="button" class="button delete-button">Delete</button>
         </div>
         <?php
     }
@@ -133,8 +136,15 @@ class Settings_Page {
         echo $post_options;
         wp_die();
     }
+
+    public static function enqueue_styles() {
+        wp_enqueue_style('custom-tabs-plugin-font', 'https://use.typekit.net/wuz0gtr.css');
+        wp_enqueue_style('custom-tabs-plugin-settings-page-style', plugins_url('../assets/scss/settings-page-style.scss', __FILE__));
+    }
 }
 
 add_action('admin_init', array('Settings_Page', 'register_settings'));
 add_action('admin_menu', array('Settings_Page', 'add_menu_page'));
+add_action('admin_enqueue_scripts', array('Settings_Page', 'enqueue_styles'));
+
 ?>

@@ -1,0 +1,53 @@
+.tabs-container {
+	display: flex;
+	flex-direction: column;
+	gap: 40px;
+	margin-bottom: 50px;
+
+	.tab-panel {
+		display: flex;
+		align-items: flex-end;
+		gap: 32px;
+
+		.delete-button {
+			color: #6d44c5;
+			border-color: #6d44c5;
+			background: #fff;
+
+			&:hover {
+				background-color: #6d44c5;
+				border-color: #6d44c5;
+				color: #fff;
+			}
+		}
+
+		h3,
+		p {
+			margin: 0;
+		}
+	}
+}
+
+.action-buttons {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin: 20px 0;
+
+	p.submit {
+		padding: 0;
+		margin: 0;
+
+		.button-primary {
+			background: #00bea6;
+			border-color: #00bea6;
+		}
+	}
+
+	#add-tab {
+		color: #fff;
+		border-color: #4c3eff;
+		background: #4c3eff;
+	}
+}
