@@ -7,6 +7,7 @@
 .tabs-header {
 	display: flex;
 	justify-content: center;
+
 	.tabs-header-titles {
 		list-style: none;
 		display: flex;
@@ -39,6 +40,20 @@
 				color: #4c3eff;
 				border-bottom: 3px solid #4c3eff;
 			}
+		}
+	}
+}
+
+.tabs-body {
+	margin: 40px 0;
+}
+
+@media (max-width: 768px) {
+	.tabs-header-titles {
+		gap: 24px !important;
+
+		.tab-title {
+			font-size: 20px !important;
 		}
 	}
 }
