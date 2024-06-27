@@ -19,6 +19,8 @@ The Custom Tabs Plugin allows you to create custom tabs on your WordPress site, 
 1. **Create or Use Existing Posts and Pages:**
    - The plugin uses posts and pages as content sources for the tabs. You can create new post type or use existing ones.
 
+
+
 ### Example Code
 
 To see an example of how the tabs look, add the following code to your post (built with basic Gutenberg):
